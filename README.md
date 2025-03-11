@@ -1,1 +1,3 @@
 # misMascotas
+
+* Genera un prompt donde actues como un Developer Web Sr utilizando una IA para crear una app web para tener el registro de mis mascotas, agregar el perfil por mascota, edad, alimentacion entre otras cosas, utilizare firebase para la autenticacion, la base de datos y el almacenamiento de imagenes, utilizare VSC para probar y de codigo necesito que cada pagina sea un solo archivo, cada archivo estara compuesto por Html, css y js, ademas lo subire a github pages. De estilos, usa el CDN de bulma para los estilos de css, usa Ionicons para agregar iconos iconos y agrega animaciones de Anime.js para que la transicion sea mas ligera. Tengo la configuracion de firebase para que la agregues a los archivos de configuracion.

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio - Registro de Mascotas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        body {
+            background-image: url('images/fondo_mascotas.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #4a4a4a;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.5); /* Fondo blanco con opacidad */
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .title {
+            color: #6a5acd;
+        }
+        .button.is-primary {
+            background-color: #6495ED; /* Color azul base */
+            border-color: #6495ED;
+            color: #fff;
+        }
+        .popup-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffb6c1;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1 class="title">Bienvenido al Registro de Mascotas</h1>
+    <p class="subtitle">Administra el perfil de tus mascotas fácilmente</p>
+
+    <div class="buttons">
+        <a href="login.html" class="button is-primary is-fullwidth">Iniciar Sesión</a>
+        <a href="register.html" class="button is-link is-fullwidth mt-2">Registrarse</a>
+    </div>
+</div>
+
+<!-- Popup de alerta -->
+<div id="popup" class="popup-alert">¡Bienvenido!</div>
+
+<script>
+    // Mostrar popup al cargar la página
+    window.onload = () => {
+        const popup = document.getElementById('popup');
+        popup.style.opacity = 1;
+        setTimeout(() => {
+            anime({
+                targets: '#popup',
+                opacity: 0,
+                duration: 1000,
+                easing: 'easeInOutQuad'
+            });
+        }, 5000);
+    };
+</script>
+
+</body>
+</html>

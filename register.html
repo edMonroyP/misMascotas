@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - Registro de Mascotas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        body {
+            background-image: url('images/fondo_register.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #4a4a4a;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .title {
+            color: #6a5acd;
+            margin-bottom: 1rem;
+        }
+
+        .button.is-primary {
+            background-color: #6495ED;
+            border-color: #6495ED;
+            color: #fff;
+            margin-top: 1rem;
+        }
+
+        .popup-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffb6c1;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1000;
+        }
+
+        .password-popup {
+            position: absolute;
+            top: 0;
+            left: 105%;
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            text-align: left;
+            z-index: 10;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .valid {
+            color: #32cd32;
+            transition: color 0.3s ease;
+        }
+
+        .invalid {
+            color: #ff4d4d;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .password-toggle:hover {
+            color: #6a5acd;
+        }
+
+        .preview-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preview-image {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1 class="title">Registro de Usuario</h1>
+        <form id="registerForm">
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="text" id="firstName" placeholder="Nombre" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="text" id="lastName" placeholder="Apellidos" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="email" id="email" placeholder="Correo electrónico" required>
+                </div>
+            </div>
+            <div class="field has-icons-right" style="position: relative;">
+                <div class="control">
+                    <input class="input" type="password" id="password" placeholder="Contraseña" required
+                        onfocus="showPasswordPopup()" onblur="hidePasswordPopup()">
+                    <span class="password-toggle" onclick="togglePassword('password', 'toggleIcon')">
+                        <ion-icon id="toggleIcon" name="eye-off-outline"></ion-icon>
+                    </span>
+                </div>
+                <div id="passwordPopup" class="password-popup">
+                    <p id="lowercase">🔴 Al menos una letra minúscula</p>
+                    <p id="uppercase">🔴 Al menos una letra mayúscula</p>
+                    <p id="number">🔴 Al menos un número</p>
+                    <p id="symbol">🔴 Al menos un símbolo</p>
+                    <p id="length">🔴 Al menos 8 caracteres</p>
+                </div>
+            </div>
+            <div class="field has-icons-right" style="position: relative;">
+                <div class="control">
+                    <input class="input" type="password" id="confirmPassword" placeholder="Confirmar contraseña"
+                        required>
+                    <span class="password-toggle" onclick="togglePassword('confirmPassword', 'toggleIconConfirm')">
+                        <ion-icon id="toggleIconConfirm" name="eye-off-outline"></ion-icon>
+                    </span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="file is-boxed">
+                    <label class="file-label">
+                        <input class="file-input" type="file" id="photo" accept="image/*" onchange="previewImageShow()">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <ion-icon name="cloud-upload"></ion-icon>
+                            </span>
+                            <span class="file-label">Subir Foto (opcional)</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="preview-container">
+                    <img id="previewImage" class="preview-image" alt="Vista previa" />
+                </div>
+            </div>
+            <button id="registerForm" type="submit" class="button is-primary is-fullwidth">Registrarse</button>
+        </form>
+    </div>
+<!-- Importación directa desde CDN de Firebase -->
+<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
+
+    <script>
+       // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
+        authDomain: "mascotas-ab4e2.firebaseapp.com",
+        projectId: "mascotas-ab4e2",
+        storageBucket: "mascotas-ab4e2.appspot.com",
+        messagingSenderId: "208867050346",
+        appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+        measurementId: "G-E5WBQ6WQM4"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Función para registrar usuario en Firebase
+    window.registerUser = async function () {
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const file = document.getElementById('photo').files[0];
+
+        // Validación de campos obligatorios
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
+            alert("Todos los campos son obligatorios excepto la foto.");
+            return;
+        }
+
+        // Validación de coincidencia de contraseñas
+        if (password !== confirmPassword) {
+            alert("Las contraseñas no coinciden.");
+            return;
+        }
+
+        try {
+            let photoUrl = '';
+
+            // Si el usuario sube una foto, súbela a Firebase Storage
+            if (file) {
+                const storageRef = storage.ref(`users/${Date.now()}_${file.name}`);
+                const snapshot = await storageRef.put(file);
+                photoUrl = await snapshot.ref.getDownloadURL();
+            }
+
+            // Guardar datos en Firestore
+            await db.collection("users").doc(email).set({
+                firstName,
+                lastName,
+                email,
+                password, // ⚠️ Considera almacenar una versión hasheada para mayor seguridad
+                photoUrl
+            });
+
+            alert("Usuario registrado correctamente.");
+            // Opcional: Redirigir a otra página después de registrar
+            // window.location.href = 'dashboard.html';
+        } catch (error) {
+            console.error("Error al registrar usuario:", error);
+            alert("Error al registrar usuario.");
+        }
+    };
+
+    // Asociar el evento al botón de registro
+    document.getElementById('registerForm').addEventListener('submit', (event) => {
+        event.preventDefault(); // Evitar el envío por defecto
+        registerUser(); // Llamar a la función de registro
+    });
+
+        // Mostrar popup de validación de contraseña
+        window.showPasswordPopup = function () {
+            document.getElementById('passwordPopup').style.display = 'block';
+        }
+
+        // Ocultar popup de validación de contraseña
+        window.hidePasswordPopup = function () {
+            document.getElementById('passwordPopup').style.display = 'none';
+        }
+
+        // Alternar visibilidad de la contraseña
+        window.togglePassword = function (fieldId, iconId) {
+            const password = document.getElementById(fieldId);
+            const icon = document.getElementById(iconId);
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.name = 'eye-outline';
+            } else {
+                password.type = 'password';
+                icon.name = 'eye-off-outline';
+            }
+        }
+
+        // Mostrar preview de la imagen cargada
+        window.previewImageShow = function () {
+            const file = document.getElementById('photo').files[0];
+            const preview = document.getElementById('previewImage');
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // Animación y validación de la contraseña
+        document.getElementById('password').addEventListener('input', () => {
+            const password = document.getElementById('password').value;
+
+            const validations = {
+                lowercase: /[a-z]/.test(password),
+                uppercase: /[A-Z]/.test(password),
+                number: /[0-9]/.test(password),
+                symbol: /[!@#$%^&*]/.test(password),
+                length: password.length >= 8
+            };
+
+            // Aplicar animación y color según la validación
+            Object.keys(validations).forEach((key) => {
+                const element = document.getElementById(key);
+                if (validations[key]) {
+                    element.className = 'valid';
+                    anime({
+                        targets: `#${key}`,
+                        scale: [1, 1.1],
+                        duration: 200,
+                        easing: 'easeInOutQuad'
+                    });
+                } else {
+                    element.className = 'invalid';
+                    anime({
+                        targets: `#${key}`,
+                        scale: [1.1, 1],
+                        duration: 200,
+                        easing: 'easeInOutQuad'
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
