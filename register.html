@@ -184,82 +184,85 @@
             <button type="submit" class="button is-primary is-fullwidth">Registrarse</button>
         </form>
     </div>
-<!-- Importación directa desde CDN de Firebase -->
-<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
+    <!-- Importación directa desde CDN de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
 
     <script>
-       // Configuración de Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
-        authDomain: "mascotas-ab4e2.firebaseapp.com",
-        projectId: "mascotas-ab4e2",
-        storageBucket: "mascotas-ab4e2.appspot.com",
-        messagingSenderId: "208867050346",
-        appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
-        measurementId: "G-E5WBQ6WQM4"
-    };
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
+            authDomain: "mascotas-ab4e2.firebaseapp.com",
+            projectId: "mascotas-ab4e2",
+            storageBucket: "mascotas-ab4e2.appspot.com",
+            messagingSenderId: "208867050346",
+            appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+            measurementId: "G-E5WBQ6WQM4"
+        };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-    // Función para registrar usuario en Firebase
-    window.registerUser = async function () {
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const file = document.getElementById('photo').files[0];
+        // Función para registrar usuario en Firebase
+        window.registerUser = async function () {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const file = document.getElementById('photo').files[0];
 
-        // Validación de campos obligatorios
-        if (!firstName || !lastName || !email || !password || !confirmPassword) {
-            alert("Todos los campos son obligatorios excepto la foto.");
-            return;
-        }
-
-        // Validación de coincidencia de contraseñas
-        if (password !== confirmPassword) {
-            alert("Las contraseñas no coinciden.");
-            return;
-        }
-
-        try {
-            let photoUrl = '';
-
-            // Si el usuario sube una foto, súbela a Firebase Storage
-            if (file) {
-                const storageRef = storage.ref(`users/${Date.now()}_${file.name}`);
-                const snapshot = await storageRef.put(file);
-                photoUrl = await snapshot.ref.getDownloadURL();
+            // Validación de campos obligatorios
+            if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                alert("Todos los campos son obligatorios excepto la foto.");
+                return;
             }
 
-            // Guardar datos en Firestore
-            await db.collection("users").doc(email).set({
-                firstName,
-                lastName,
-                email,
-                password, // ⚠️ Considera almacenar una versión hasheada para mayor seguridad
-                photoUrl
-            });
+            // Validación de coincidencia de contraseñas
+            if (password !== confirmPassword) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
 
-            alert("Usuario registrado correctamente.");
-            // Opcional: Redirigir a otra página después de registrar
-            // window.location.href = 'dashboard.html';
-        } catch (error) {
-            console.error("Error al registrar usuario:", error);
-            alert("Error al registrar usuario.");
-        }
-    };
+            try {
+                let photoUrl = '';
 
-    // Asociar el evento al botón de registro
-    document.getElementById('registerForm').addEventListener('submit', (event) => {
-        event.preventDefault(); // Evitar el envío por defecto
-        registerUser(); // Llamar a la función de registro
-    });
+                // Si el usuario sube una foto, súbela a Firebase Storage
+                if (file) {
+                    const metadata = {
+                        contentType: file.type
+                    };
+                    console.log("Subiendo imagen a Firebase Storage...");
+                    const storageRef = storage.ref(`users/${Date.now()}_${file.name}`);
+                    const snapshot = await storageRef.put(file, metadata);
+                    photoUrl = await snapshot.ref.getDownloadURL();
+                    console.log("Imagen subida correctamente:", photoUrl);
+                }
+
+                // Guardar datos en Firestore
+                await db.collection("users").doc(email).set({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    photoUrl
+                });
+
+                alert("Usuario registrado correctamente.");
+            } catch (error) {
+                console.error("Error al registrar usuario:", error);
+                alert("Error al registrar usuario.");
+            }
+        };
+
+        // Asociar el evento al botón de registro
+        document.getElementById('registerForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            registerUser();
+        });
 
         // Mostrar popup de validación de contraseña
         window.showPasswordPopup = function () {
@@ -308,7 +311,6 @@
                 length: password.length >= 8
             };
 
-            // Aplicar animación y color según la validación
             Object.keys(validations).forEach((key) => {
                 const element = document.getElementById(key);
                 if (validations[key]) {
@@ -330,6 +332,7 @@
                 }
             });
         });
+
     </script>
 
 </body>
