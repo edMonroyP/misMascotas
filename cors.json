@@ -10,10 +10,6 @@
             "DELETE",
             "OPTIONS"
         ],
-        "maxAgeSeconds": 3600,
-        "responseHeader": [
-            "Content-Type",
-            "Authorization"
-        ]
+        "maxAgeSeconds": 3600
     }
 ]
