@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <style>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+  <style>
         body {
             background-image: url('images/fondo_register.webp');
             background-size: cover;
@@ -167,15 +171,11 @@
             <button type="submit" class="button is-primary is-fullwidth">Registrarse</button>
         </form>
     </div>
-    <!-- Importación directa desde CDN de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
-
+ 
     <script>
         // Configuración de Firebase
         const firebaseConfig = {
-            apiKey: "{{FIREBASE_API_KEY}}",
+            apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
             authDomain: "mascotas-ab4e2.firebaseapp.com",
             projectId: "mascotas-ab4e2",
             storageBucket: "mascotas-ab4e2.appspot.com",
@@ -183,67 +183,73 @@
             appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
             measurementId: "G-E5WBQ6WQM4"
         };
-
+    
         // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        // Función para registrar usuario en Firestore
+        const auth = firebase.auth(); // 🚀 Esta línea ya no debería dar error
+    
+        // Función para registrar usuario en Firebase Authentication y Firestore
         window.registerUser = async function () {
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-
+    
             // Validación de campos obligatorios
             if (!firstName || !lastName || !email || !password || !confirmPassword) {
                 alert("Todos los campos son obligatorios.");
                 return;
             }
-
+    
             // Validación de coincidencia de contraseñas
             if (password !== confirmPassword) {
                 alert("Las contraseñas no coinciden.");
                 return;
             }
-
+    
             try {
-                // Guardar datos en Firestore
-                await db.collection("users").doc(email).set({
+                // Registrar usuario en Firebase Authentication
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+    
+                // Guardar datos adicionales en Firestore usando el UID generado por Firebase
+                await db.collection("users").doc(user.uid).set({
                     firstName,
                     lastName,
-                    email,
-                    password
+                    email
                 });
-
+    
                 alert("Usuario registrado correctamente.");
-
-                // Redirigir a la pantalla de login o dashboard (si aplica)
-                window.location.href = 'login.html';
-
+    
+                // Redirigir a la pantalla de login después de 1 segundo
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+    
             } catch (error) {
                 console.error("Error al registrar usuario:", error);
-                alert("Error al registrar usuario.");
+                alert(`Error al registrar usuario: ${error.message}`);
             }
         };
-
+    
         // Asociar el evento al botón de registro
         document.getElementById('registerForm').addEventListener('submit', (event) => {
             event.preventDefault();
             registerUser();
         });
-
+    
         // Mostrar popup de validación de contraseña
         window.showPasswordPopup = function () {
             document.getElementById('passwordPopup').style.display = 'block';
-        }
-
+        };
+    
         // Ocultar popup de validación de contraseña
         window.hidePasswordPopup = function () {
             document.getElementById('passwordPopup').style.display = 'none';
-        }
-
+        };
+    
         // Alternar visibilidad de la contraseña
         window.togglePassword = function (fieldId, iconId) {
             const password = document.getElementById(fieldId);
@@ -255,12 +261,12 @@
                 password.type = 'password';
                 icon.name = 'eye-off-outline';
             }
-        }
-
+        };
+    
         // Animación y validación de la contraseña
         document.getElementById('password').addEventListener('input', () => {
             const password = document.getElementById('password').value;
-
+    
             const validations = {
                 lowercase: /[a-z]/.test(password),
                 uppercase: /[A-Z]/.test(password),
@@ -268,7 +274,7 @@
                 symbol: /[!@#$%^&*]/.test(password),
                 length: password.length >= 8
             };
-
+    
             Object.keys(validations).forEach((key) => {
                 const element = document.getElementById(key);
                 if (validations[key]) {
@@ -291,7 +297,6 @@
             });
         });
     </script>
-
 </body>
 
 </html>
