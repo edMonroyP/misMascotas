@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,8 +22,9 @@
             align-items: center;
             margin: 0;
         }
+
         .card {
-            background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco con opacidad del 80% */
+            background-color: rgba(255, 255, 255, 0.8);
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -31,19 +33,23 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
+
         .card:hover {
             transform: scale(1.05);
         }
+
         .title {
             color: #6a5acd;
             margin-bottom: 1rem;
         }
+
         .button.is-primary {
-            background-color: #6495ED; /* Color azul base */
+            background-color: #6495ED;
             border-color: #6495ED;
             color: #fff;
             margin-top: 1rem;
         }
+
         .popup-alert {
             position: fixed;
             top: 20px;
@@ -58,6 +64,7 @@
             transition: opacity 0.5s ease;
             z-index: 1000;
         }
+
         .link {
             margin-top: 1rem;
             display: block;
@@ -66,75 +73,91 @@
             cursor: pointer;
             transition: color 0.3s ease;
         }
+
         .link:hover {
             color: #483d8b;
         }
     </style>
 </head>
+
 <body>
 
-<div class="card">
-    <h1 class="title">Iniciar Sesión</h1>
-    <form id="loginForm">
-        <div class="field">
-            <div class="control has-icons-left">
-                <input class="input" type="email" id="email" placeholder="Correo electrónico" required>
-                <span class="icon is-small is-left">
-                    <ion-icon name="mail"></ion-icon>
-                </span>
+    <div class="card">
+        <h1 class="title">Iniciar Sesión</h1>
+        <form id="loginForm">
+            <div class="field">
+                <div class="control has-icons-left">
+                    <input class="input" type="email" id="email" placeholder="Correo electrónico" required>
+                    <span class="icon is-small is-left">
+                        <ion-icon name="mail"></ion-icon>
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="field">
-            <div class="control has-icons-left">
-                <input class="input" type="password" id="password" placeholder="Contraseña" required>
-                <span class="icon is-small is-left">
-                    <ion-icon name="lock-closed"></ion-icon>
-                </span>
+            <div class="field">
+                <div class="control has-icons-left">
+                    <input class="input" type="password" id="password" placeholder="Contraseña" required>
+                    <span class="icon is-small is-left">
+                        <ion-icon name="lock-closed"></ion-icon>
+                    </span>
+                </div>
             </div>
-        </div>
-        <button type="submit" class="button is-primary is-fullwidth">Iniciar Sesión</button>
-    </form>
-    <a href="register.html" class="link">¿No tienes cuenta? Regístrate aquí</a>
-</div>
+            <button type="submit" class="button is-primary is-fullwidth">Iniciar Sesión</button>
+        </form>
+        <a href="register.html" class="link">¿No tienes cuenta? Regístrate aquí</a>
+    </div>
 
-<!-- Popup de alerta -->
-<div id="popup" class="popup-alert"></div>
+    <!-- Popup de alerta -->
+    <div id="popup" class="popup-alert"></div>
 
-<script>
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-    
-    const auth = getAuth();
+    <script type="module">
+        // Configuración de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const firebaseConfig = {
+            apiKey: "{{FIREBASE_API_KEY}}",
+            authDomain: "mascotas-ab4e2.firebaseapp.com",
+            projectId: "mascotas-ab4e2",
+            storageBucket: "mascotas-ab4e2.appspot.com",
+            messagingSenderId: "208867050346",
+            appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+            measurementId: "G-E5WBQ6WQM4"
+        };
 
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            showPopup('Inicio de sesión exitoso');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showPopup('Inicio de sesión exitoso');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } catch (error) {
+                showPopup('Error: ' + error.message);
+            }
+        });
+
+        function showPopup(message) {
+            const popup = document.getElementById('popup');
+            popup.textContent = message;
+            popup.style.opacity = 1;
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1000);
-        } catch (error) {
-            showPopup('Error: ' + error.message);
+                anime({
+                    targets: '#popup',
+                    opacity: 0,
+                    duration: 1000,
+                    easing: 'easeInOutQuad'
+                });
+            }, 5000);
         }
-    });
-
-    function showPopup(message) {
-        const popup = document.getElementById('popup');
-        popup.textContent = message;
-        popup.style.opacity = 1;
-        setTimeout(() => {
-            anime({
-                targets: '#popup',
-                opacity: 0,
-                duration: 1000,
-                easing: 'easeInOutQuad'
-            });
-        }, 5000);
-    }
-</script>
+    </script>
 
 </body>
+
 </html>
