@@ -7,39 +7,241 @@
     <title>Dashboard - Registro de Mascotas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <!-- Firebase Core -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            background-image: url('images/fondo_dashboard.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #4a4a4a;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .title {
+            color: #6a5acd;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .button.is-primary {
+            background-color: #6495ED;
+            border-color: #6495ED;
+            color: #fff;
+            margin-top: 1rem;
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #6a5acd;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .floating-button:hover {
+            background-color: #483d8b;
+        }
+
+        .pet-list {
+            width: 100%;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            overflow-y: auto;
+            max-height: 400px;
+            text-align: center;
+        }
+
+        .pet-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pet-item:last-child {
+            border-bottom: none;
+        }
+
+        .pet-name {
+            font-weight: bold;
+            color: #6a5acd;
+        }
+
+        .empty-message {
+            color: #aaa;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #6a5acd;
+            margin-bottom: 10px;
+        }
+
+        /* Botón flotante para cerrar sesión */
+        .logout-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .logout-button:hover {
+            background-color: #e53935;
+        }
+    </style>
 </head>
 
 <body>
+
+    <!-- Botón flotante para cerrar sesión -->
+    <button class="logout-button" onclick="logout()">Cerrar Sesión</button>
 
     <section class="section">
         <div class="container">
             <div class="card">
                 <div class="card-content">
-                    <p class="title">Bienvenido al Dashboard</p>
-                    <p class="subtitle">Aquí podrás gestionar tus mascotas.</p>
-                    <button class="button is-primary" onclick="logout()">Cerrar Sesión</button>
+                    <p class="title">¡Hola! 👋 Bienvenido a tu espacio para gestionar tus mascotas</p>
+                    <p class="subtitle">Aquí puedes agregar y administrar el perfil de tus mascotas fácilmente.</p>
                 </div>
+            </div>
+
+            <div id="petList" class="pet-list">
+                <!-- Contenido dinámico desde Firebase -->
+            </div>
+
+            <!-- Botón flotante para agregar mascota -->
+            <div class="floating-button" onclick="addPet()">
+                <ion-icon name="add-outline" size="large"></ion-icon>
             </div>
         </div>
     </section>
 
     <script>
-        // Función para cerrar sesión
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
+            authDomain: "mascotas-ab4e2.firebaseapp.com",
+            projectId: "mascotas-ab4e2",
+            storageBucket: "mascotas-ab4e2.appspot.com",
+            messagingSenderId: "208867050346",
+            appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+            measurementId: "G-E5WBQ6WQM4"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Mostrar mascotas asociadas al usuario
+        function loadPets() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                db.collection("pets").where("userId", "==", user.uid).onSnapshot((snapshot) => {
+                    const petList = document.getElementById("petList");
+                    petList.innerHTML = "";
+
+                    if (snapshot.empty) {
+                        // Mostrar mensaje amigable si no hay mascotas
+                        petList.innerHTML = `
+                    <div class="empty-message">
+                        <ion-icon name="paw-outline" class="empty-icon"></ion-icon>
+                        <p>No tienes mascotas registradas. ¡Añade tu primera mascota!</p>
+                    </div>
+                `;
+                    } else {
+                        snapshot.forEach((doc) => {
+                            const pet = doc.data();
+                            const petItem = `
+                        <div class="pet-item">
+                            <span class="pet-name">${pet.name}</span>
+                            <span>${pet.age} años</span>
+                        </div>
+                    `;
+                            petList.innerHTML += petItem;
+                        });
+                    }
+                });
+            }
+        }
+
+        // Cerrar sesión
         window.logout = function () {
             firebase.auth().signOut().then(() => {
                 alert("Sesión cerrada correctamente");
                 window.location.href = 'login.html';
             }).catch((error) => {
-                console.error("Error al cerrar sesión:", error);
                 alert("Error al cerrar sesión");
             });
-        }
+        };
+
+        // Redirigir para agregar una mascota
+        window.addPet = function () {
+            window.location.href = 'add-pet.html';
+        };
 
         // Verificar si el usuario está autenticado
         firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
-                // Si no hay usuario autenticado, redirigir al login
                 window.location.href = 'login.html';
+            } else {
+                loadPets();
             }
         });
     </script>
