@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Mascota</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <!-- Firebase Core -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background-image: url('images/fondo_alta.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #4a4a4a;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .title {
+            color: #6a5acd;
+            margin-bottom: 1rem;
+        }
+
+        .button.is-primary {
+            background-color: #6495ED;
+            border-color: #6495ED;
+            color: #fff;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .back-link {
+            margin-top: 1rem;
+            display: block;
+            color: #6a5acd;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #483d8b;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 1rem;
+            padding: 12px 24px;
+            background-color: #6495ED;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-link i {
+            font-size: 18px;
+        }
+
+        .back-link:hover {
+            background-color: #483d8b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-link:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1 class="title">Agregar Nueva Mascota</h1>
+        <form id="addPetForm">
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="text" id="petName" placeholder="Nombre de la mascota" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="number" id="petAge" placeholder="Edad de la mascota" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-fullwidth">
+                        <select id="petType" required>
+                            <option value="">Selecciona el tipo de mascota</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Ave">Ave</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <textarea class="textarea" id="petDescription" placeholder="Descripción (opcional)"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="button is-primary">Guardar</button>
+        </form>
+        <a href="dashboard.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Dashboard
+        </a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
+            authDomain: "mascotas-ab4e2.firebaseapp.com",
+            projectId: "mascotas-ab4e2",
+            storageBucket: "mascotas-ab4e2.appspot.com",
+            messagingSenderId: "208867050346",
+            appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+            measurementId: "G-E5WBQ6WQM4"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Guardar mascota en Firestore
+        async function savePet() {
+            const name = document.getElementById('petName').value;
+            const age = parseInt(document.getElementById('petAge').value);
+            const type = document.getElementById('petType').value;
+            const description = document.getElementById('petDescription').value;
+
+            // Validar campos obligatorios
+            if (!name || !age || !type) {
+                alert("Por favor, completa todos los campos obligatorios.");
+                return;
+            }
+
+            const user = auth.currentUser; // Obtener usuario autenticado
+
+            if (user) {
+                try {
+                    await db.collection('pets').add({
+                        userId: user.uid, // Relacionar la mascota con el usuario
+                        name,
+                        age,
+                        type,
+                        description
+                    });
+                    alert("Mascota agregada correctamente.");
+                    window.location.href = 'dashboard.html'; // Redirigir al dashboard
+                } catch (error) {
+                    console.error("Error al guardar mascota: ", error);
+                    alert("Error al guardar la mascota.");
+                }
+            } else {
+                alert("Usuario no autenticado.");
+                window.location.href = 'login.html'; // Redirigir al login si no hay autenticación
+            }
+        }
+
+        // Asociar evento al botón de guardar
+        document.getElementById('addPetForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            savePet();
+        });
+    </script>
+
+</body>
+
+</html>

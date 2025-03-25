@@ -146,6 +146,54 @@
         .logout-button:hover {
             background-color: #e53935;
         }
+
+        .pet-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pet-item:last-child {
+            border-bottom: none;
+        }
+        .pet-item {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pet-item:hover {
+            background-color: rgba(100, 149, 237, 0.1);
+        }
+
+        .pet-icon-container {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+        }
+
+        .pet-icon {
+            font-size: 24px;
+            color: #6a5acd;
+        }
+
+        .pet-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pet-name {
+            font-weight: bold;
+            color: #6a5acd;
+        }
     </style>
 </head>
 
@@ -188,6 +236,19 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        // Función para obtener el icono según el tipo de mascota
+        function getPetIcon(type) {
+            switch (type) {
+                case 'Perro':
+                    return '<ion-icon name="paw-outline" class="pet-icon"></ion-icon>';
+                case 'Gato':
+                    return '<ion-icon name="logo-octocat" class="pet-icon"></ion-icon>';
+                case 'Ave':
+                    return '<ion-icon name="bird-outline" class="pet-icon"></ion-icon>';
+                default:
+                    return '<ion-icon name="help-circle-outline" class="pet-icon"></ion-icon>';
+            }
+        }
 
         // Mostrar mascotas asociadas al usuario
         function loadPets() {
@@ -198,7 +259,6 @@
                     petList.innerHTML = "";
 
                     if (snapshot.empty) {
-                        // Mostrar mensaje amigable si no hay mascotas
                         petList.innerHTML = `
                     <div class="empty-message">
                         <ion-icon name="paw-outline" class="empty-icon"></ion-icon>
@@ -208,10 +268,16 @@
                     } else {
                         snapshot.forEach((doc) => {
                             const pet = doc.data();
+                            const petId = doc.id;
                             const petItem = `
-                        <div class="pet-item">
-                            <span class="pet-name">${pet.name}</span>
-                            <span>${pet.age} años</span>
+                        <div class="pet-item" onclick="openPetDetail('${petId}')">
+                            <div class="pet-icon-container">
+                                ${getPetIcon(pet.type)}
+                            </div>
+                            <div class="pet-details">
+                                <span class="pet-name">${pet.name}</span>
+                                <span>${pet.age} años</span>
+                            </div>
                         </div>
                     `;
                             petList.innerHTML += petItem;
@@ -220,6 +286,10 @@
                 });
             }
         }
+
+        window.openPetDetail = function (petId) {
+            window.location.href = `detail-pet.html?id=${petId}`;
+        };
 
         // Cerrar sesión
         window.logout = function () {
