@@ -135,30 +135,67 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .back-link:active { 
+        .back-link:active {
             transform: translateY(0);
+        }
+
+        /* Botón flotante para editar mascota */
+        .floating-edit-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #6a5acd;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 1000;
+        }
+
+        .floating-edit-button:hover {
+            background-color: #483d8b;
+            transform: scale(1.1);
+        }
+
+        .floating-edit-button ion-icon {
+            font-size: 24px;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="card" id="petDetails">
-        <ion-icon id="petIcon" class="pet-icon" name="paw-outline"></ion-icon>
-        <h1 class="title" id="petName">Nombre de la Mascota</h1>
-        <p class="subtitle" id="petAge">Edad: 0 años</p>
-        <p class="subtitle" id="petType">Tipo: Desconocido</p>
-        <p class="description" id="petDescription">Sin descripción disponible</p>
+    <body>
 
-        <!-- Botón para eliminar mascota -->
-        <button class="button is-danger" onclick="deletePet()">Eliminar Mascota</button>
+        <div class="card" id="petDetails">
+            <ion-icon id="petIcon" class="pet-icon" name="paw-outline"></ion-icon>
+            <h1 class="title" id="petName">Nombre de la Mascota</h1>
+            <p class="subtitle" id="petAge">Edad: 0 años</p>
+            <p class="subtitle" id="petType">Tipo: Desconocido</p>
+            <p class="description" id="petDescription">Sin descripción disponible</p>
 
-        <!-- Regresar al Dashboard -->
-        <a href="dashboard.html" class="back-link">
-            <i class="fas fa-arrow-left"></i>
-            Volver al Dashboard
-        </a>
-    </div>
+            <!-- Botón para eliminar mascota -->
+            <button class="button is-danger" onclick="deletePet()">Eliminar Mascota</button>
+
+            <!-- Regresar al Dashboard -->
+            <a href="dashboard.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Dashboard
+            </a>
+        </div>
+
+        <!-- Botón flotante para editar mascota -->
+        <div class="floating-edit-button" onclick="editPet()">
+            <ion-icon name="create-outline"></ion-icon>
+        </div>
+
+    </body>
 
     <script>
         // Configuración de Firebase
@@ -227,6 +264,22 @@
                 }
             }
         };
+
+        // ✅ Nueva función para redirigir a la pantalla de edición
+        window.editPet = () => {
+            if (petId) {
+                window.location.href = `edit-pet.html?id=${petId}`;
+            } else {
+                alert("Error: No se pudo identificar la mascota.");
+            }
+        };
+
+        // Verificar si el usuario está autenticado
+        firebase.auth().onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
     </script>
 
 </body>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Mascota</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        body {
+            background-image: url('images/fondo_edit.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #4a4a4a;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .title {
+            color: #6a5acd;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .button.is-primary {
+            background-color: #6495ED;
+            border-color: #6495ED;
+            color: #fff;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .back-link {
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            color: #6a5acd;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link ion-icon {
+            margin-right: 5px;
+            font-size: 1.2rem;
+        }
+
+        .back-link:hover {
+            color: #483d8b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1 class="title">Editar Mascota</h1>
+    <form id="editPetForm">
+        <div class="field">
+            <div class="control">
+                <input class="input" type="text" id="petName" placeholder="Nombre de la mascota" required>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <input class="input" type="number" id="petAge" placeholder="Edad de la mascota" required>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <div class="select is-fullwidth">
+                    <select id="petType" required>
+                        <option value="">Selecciona el tipo de mascota</option>
+                        <option value="Perro">Perro</option>
+                        <option value="Gato">Gato</option>
+                        <option value="Ave">Ave</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <textarea class="textarea" id="petDescription" placeholder="Descripción (opcional)"></textarea>
+            </div>
+        </div>
+        <button type="submit" class="button is-primary">Actualizar</button>
+    </form>
+    <a href="dashboard.html" class="back-link">
+        <ion-icon name="arrow-back-outline"></ion-icon> Volver al Dashboard
+    </a>
+</div>
+
+<script>
+    // Configurar Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
+        authDomain: "mascotas-ab4e2.firebaseapp.com",
+        projectId: "mascotas-ab4e2",
+        storageBucket: "mascotas-ab4e2.appspot.com",
+        messagingSenderId: "208867050346",
+        appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+        measurementId: "G-E5WBQ6WQM4"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let petId = new URLSearchParams(window.location.search).get('id');
+
+    async function loadPetData() {
+        if (petId) {
+            const petDoc = await db.collection('pets').doc(petId).get();
+            if (petDoc.exists) {
+                const pet = petDoc.data();
+                document.getElementById('petName').value = pet.name;
+                document.getElementById('petAge').value = pet.age;
+                document.getElementById('petType').value = pet.type;
+                document.getElementById('petDescription').value = pet.description;
+            }
+        }
+    }
+
+    document.getElementById('editPetForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('petName').value;
+        const age = parseInt(document.getElementById('petAge').value);
+        const type = document.getElementById('petType').value;
+        const description = document.getElementById('petDescription').value;
+
+        try {
+            await db.collection('pets').doc(petId).update({
+                name,
+                age,
+                type,
+                description
+            });
+            alert('Mascota actualizada correctamente');
+            window.location.href = 'dashboard.html';
+        } catch (error) {
+            console.error('Error al actualizar mascota:', error);
+            alert('Error al actualizar la mascota');
+        }
+    });
+
+    window.onload = loadPetData;
+</script>
+
+</body>
+
+</html>

@@ -165,3 +165,36 @@ Crea un documento de una página, altamente visual y fácil de seguir. Utiliza t
 ​
 Prompt de Ayuda para Plan de Implementación
 Completa este prompt utilizando la información de mi [producto/servicio] que hemos desarrollado en los ejercicios anteriores. El producto resuelve el problema de [problema principal] para [usuario objetivo]. Somos una [startup/empresa establecida/equipo pequeño].
+
+
+
+
+
+
+
+
+
+
+Actúa como un consultor experto en diseño de productos y servicios. Ayúdame a definir con precisión el problema que mi lanzamiento para creacion de consultoria de desarrollo de software debe resolver.
+
+CONTEXTO:
+Mi consultoria es para el desarrollo de apps mobiles, la idea es poder desarrollar cualquier tipo de sistema pero especializandose en desarrollo movil
+El mercado o industria es sector privado
+La información que he recopilado en mi fase de descubrimiento incluye:
+- precios en el mercado
+- mejores competidores
+- mercados no explotados usando el oceano azul
+
+TAREA:
+1) Sintetiza toda esta información y propón una declaración de problema clara en formato "¿Cómo podríamos...?" que mi consultora debería resolver.
+
+2) Define con precisión quién es mi usuario objetivo, incluyendo:
+   - Características demográficas básicas
+   - Necesidades principales relacionadas con mi consultora
+   - Frustraciones actuales que experimenta
+   - Motivaciones para buscar una solución
+
+3) Establece 3-5 objetivos SMART (Específicos, Medibles, Alcanzables, Relevantes y Temporales) que mi consultora debería lograr.
+
+FORMATO DE RESPUESTA:
+Presenta la información de manera estructurada y visual, usando viñetas y separadores para mayor claridad. Mantén un lenguaje simple y directo, evitando jerga técnica innecesaria.
