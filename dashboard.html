@@ -6,17 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Registro de Mascotas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <!-- Firebase Core -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
     <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
     <!-- Firebase Firestore -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
-    <!-- Ionicons para íconos como mail-outline -->
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+   <style>
         body {
             background-image: url('images/fondo_dashboard.jpg');
             background-size: cover;
@@ -250,11 +248,11 @@
 
             <!-- Botón flotante para agregar mascota -->
             <div class="floating-button" onclick="addPet()">
-                <ion-icon name="add-outline" size="large"></ion-icon>
+                <i class="fas fa-plus"></i>
             </div>
             <!-- Botón flotante para ir a Contacto -->
             <div class="floating-button-contact" onclick="goToContact()">
-                <ion-icon name="mail-outline"></ion-icon>
+                <i class="fas fa-envelope"></i>
             </div>
         </div>
     </section>
@@ -277,13 +275,13 @@
         function getPetIcon(type) {
             switch (type) {
                 case 'Perro':
-                    return '<ion-icon name="paw-outline" class="pet-icon"></ion-icon>';
+                    return '<i class="fas fa-dog pet-icon"></i>';
                 case 'Gato':
-                    return '<ion-icon name="logo-octocat" class="pet-icon"></ion-icon>';
+                    return '<i class="fas fa-cat pet-icon"></i>';
                 case 'Ave':
-                    return '<ion-icon name="bird-outline" class="pet-icon"></ion-icon>';
+                    return '<i class="fas fa-dove pet-icon"></i>';
                 default:
-                    return '<ion-icon name="help-circle-outline" class="pet-icon"></ion-icon>';
+                    return '<i class="fas fa-question-circle pet-icon"></i>';
             }
         }
 
@@ -298,7 +296,7 @@
                     if (snapshot.empty) {
                         petList.innerHTML = `
                     <div class="empty-message">
-                        <ion-icon name="paw-outline" class="empty-icon"></ion-icon>
+                        <i class="fas fa-dog pet-icon"></i>
                         <p>No tienes mascotas registradas. ¡Añade tu primera mascota!</p>
                     </div>
                 `;

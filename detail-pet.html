@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Mascota</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Firebase Core -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
     <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
     <!-- Firebase Firestore -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             background-image: url('images/fondo_detalle.jpg');
@@ -174,7 +173,7 @@
     <body>
 
         <div class="card" id="petDetails">
-            <ion-icon id="petIcon" class="pet-icon" name="paw-outline"></ion-icon>
+            <i id="petIcon" class="pet-icon fas fa-paw"></i>
             <h1 class="title" id="petName">Nombre de la Mascota</h1>
             <p class="subtitle" id="petAge">Edad: 0 años</p>
             <p class="subtitle" id="petType">Tipo: Desconocido</p>
@@ -192,7 +191,7 @@
 
         <!-- Botón flotante para editar mascota -->
         <div class="floating-edit-button" onclick="editPet()">
-            <ion-icon name="create-outline"></ion-icon>
+            <i class="fas fa-pen"></i>
         </div>
 
     </body>
@@ -213,10 +212,10 @@
         const db = firebase.firestore();
 
         const petIcons = {
-            "Perro": "paw-outline",
-            "Gato": "heart-outline",
-            "Ave": "airplane-outline",
-            "Otro": "help-outline"
+            "Perro": "fa-dog",
+            "Gato": "fa-cat",
+            "Ave": "fa-dove",
+            "Otro": "fa-question-circle"
         };
 
         let petId = null;
@@ -238,7 +237,8 @@
 
                         // Mostrar icono según tipo
                         const petIcon = petIcons[pet.type] || petIcons["Otro"];
-                        document.getElementById('petIcon').setAttribute('name', petIcon);
+                        const petIconElement = document.getElementById('petIcon');
+                        petIconElement.className = `pet-icon fas ${petIcon}`;
                     } else {
                         alert("Mascota no encontrada.");
                         window.location.href = 'dashboard.html';

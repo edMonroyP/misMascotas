@@ -6,16 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contacto - Registro de Mascotas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" />
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
-
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     <style>
         body {
@@ -205,7 +201,7 @@
 <body>
     <div class="container">
         <div class="card">
-            <h1 class="title">Contacto y Comentarios</h1>
+            <h1 class="title"><i class="fas fa-comments"></i> Contacto y Comentarios</h1>
             <p class="subtitle">
                 Hola, mi nombre es Eduardo. Soy Líder Técnico en una consultora de software y me especializo en
                 desarrollo mobile.
@@ -229,12 +225,12 @@
                 <div class="field">
                     <label class="rating-label">Agradecería mucho tu puntuación</label>
                     <div class="star-rating">
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                        <span class="star">&#9733;</span>
-                    </div>
+                        <span class="star"><i class="fa-solid fa-star"></i></span>
+                        <span class="star"><i class="fa-solid fa-star"></i></span>
+                        <span class="star"><i class="fa-solid fa-star"></i></span>
+                        <span class="star"><i class="fa-solid fa-star"></i></span>
+                        <span class="star"><i class="fa-solid fa-star"></i></span>
+                      </div>
                 </div>
 
                 <button type="submit" class="button is-primary">Enviar Comentario</button>
@@ -373,7 +369,7 @@
                         <span class="comment-email">${data.email}</span>
                         <span class="comment-meta">${dateFormatted}</span>
                         <span class="comment-text">${data.comment}</span>
-                        <span class="comment-rating">${"⭐".repeat(data.rating)}</span>
+                        <span class="comment-rating">${'<i class="fa-solid fa-star"></i>'.repeat(data.rating)}</span>
                     </div>
                 </div>
             `;

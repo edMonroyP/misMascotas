@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Mascota</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Firebase Core -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
     <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             background-image: url('images/fondo_alta.webp');
@@ -117,14 +116,21 @@
             </div>
             <div class="field">
                 <div class="control">
-                    <div class="select is-fullwidth">
-                        <select id="petType" required>
-                            <option value="">Selecciona el tipo de mascota</option>
-                            <option value="Perro">Perro</option>
-                            <option value="Gato">Gato</option>
-                            <option value="Ave">Ave</option>
-                            <option value="Otro">Otro</option>
-                        </select>
+                    <div class="field has-icons-left">
+                        <div class="control has-icons-left">
+                            <div class="select is-fullwidth">
+                                <select id="petType" required>
+                                    <option value="">Selecciona el tipo de mascota</option>
+                                    <option value="Perro">Perro</option>
+                                    <option value="Gato">Gato</option>
+                                    <option value="Ave">Ave</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                            <span class="icon is-left">
+                                <i class="fas fa-paw"></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

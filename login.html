@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Registro de Mascotas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-     <!-- Firebase Core -->
-     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
-     <!-- Firebase Authentication -->
-     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
- 
-  <style>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+
+    <style>
         body {
             background-image: url('images/fondo_login.webp');
             background-size: cover;
@@ -100,93 +101,95 @@
 
 <body>
 
-<div class="card">
-    <h1 class="title">Iniciar Sesión</h1>
-    <form id="loginForm">
-        <div class="field">
-            <div class="control has-icons-left">
-                <input class="input" type="email" id="email" placeholder="Correo electrónico" required>
-                <span class="icon is-small is-left">
-                    <ion-icon name="mail"></ion-icon>
-                </span>
+    <div class="card">
+        <h1 class="title">Iniciar Sesión</h1>
+        <form id="loginForm">
+            <div class="field">
+                <div class="control has-icons-left">
+                    <input class="input" type="email" id="email" placeholder="Correo electrónico" required>
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="field">
-            <div class="control has-icons-left has-icons-right">
-                <input class="input" type="password" id="password" placeholder="Contraseña" required>
-                <span class="icon is-small is-left">
-                    <ion-icon name="lock-closed"></ion-icon>
-                </span>
-                <span class="password-toggle" onclick="togglePassword('password', 'toggleIcon')">
-                    <ion-icon id="toggleIcon" name="eye-off-outline"></ion-icon>
-                </span>
+            <div class="field">
+                <div class="control has-icons-left has-icons-right" style="position: relative;">
+                    <input class="input" type="password" id="password" placeholder="Contraseña" required>
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <span class="password-toggle" onclick="togglePassword('password', 'toggleIcon')">
+                        <i id="toggleIcon" class="fas fa-eye-slash"></i>
+                    </span>
+                </div>
             </div>
-        </div>
-        <button type="submit" class="button is-primary is-fullwidth">Iniciar Sesión</button>
-    </form>
-    <a href="register.html" class="link">¿No tienes cuenta? Regístrate aquí</a>
-</div>
+            <button type="submit" class="button is-primary is-fullwidth">Iniciar Sesión</button>
+        </form>
+        <a href="register.html" class="link">¿No tienes cuenta? Regístrate aquí</a>
+    </div>
 
-<!-- Popup de alerta -->
-<div id="popup" class="popup-alert"></div>
+    <!-- Popup de alerta -->
+    <div id="popup" class="popup-alert"></div>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
-        authDomain: "mascotas-ab4e2.firebaseapp.com",
-        projectId: "mascotas-ab4e2",
-        storageBucket: "mascotas-ab4e2.appspot.com",
-        messagingSenderId: "208867050346",
-        appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
-        measurementId: "G-E5WBQ6WQM4"
-    };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBI-K480gBDh813ovO7H0LjqinRabg2NUw",
+            authDomain: "mascotas-ab4e2.firebaseapp.com",
+            projectId: "mascotas-ab4e2",
+            storageBucket: "mascotas-ab4e2.appspot.com",
+            messagingSenderId: "208867050346",
+            appId: "1:208867050346:web:cfa06e2fbc8b502dc29b13",
+            measurementId: "G-E5WBQ6WQM4"
+        };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
-            showPopup('Inicio de sesión exitoso');
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showPopup('Inicio de sesión exitoso');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } catch (error) {
+                showPopup('Error: ' + error.message);
+            }
+        });
+
+        window.togglePassword = function (fieldId, iconId) {
+            const password = document.getElementById(fieldId);
+            const icon = document.getElementById(iconId);
+
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        };
+
+        function showPopup(message) {
+            const popup = document.getElementById('popup');
+            popup.textContent = message;
+            popup.style.opacity = 1;
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1000);
-        } catch (error) {
-            showPopup('Error: ' + error.message);
+                anime({
+                    targets: '#popup',
+                    opacity: 0,
+                    duration: 1000,
+                    easing: 'easeInOutQuad'
+                });
+            }, 5000);
         }
-    });
-
-    window.togglePassword = function (fieldId, iconId) {
-        const password = document.getElementById(fieldId);
-        const icon = document.getElementById(iconId);
-
-        if (password.type === 'password') {
-            password.type = 'text';
-            icon.name = 'eye-outline';
-        } else {
-            password.type = 'password';
-            icon.name = 'eye-off-outline';
-        }
-    };
-
-    function showPopup(message) {
-        const popup = document.getElementById('popup');
-        popup.textContent = message;
-        popup.style.opacity = 1;
-        setTimeout(() => {
-            anime({
-                targets: '#popup',
-                opacity: 0,
-                duration: 1000,
-                easing: 'easeInOutQuad'
-            });
-        }, 5000);
-    }
-</script>
+    </script>
 
 </body>
 
